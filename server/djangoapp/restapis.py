@@ -10,11 +10,19 @@ sentiment_analyzer_url = os.getenv('sentiment_analyzer_url', default="http://127
 
 
 def get_request(endpoint, **kwargs):
-    params = {}
-    if kwargs:
-        params = kwargs
-    response = requests.get(f"{backend_url}/{endpoint}", params=params)
-    return response.json()
+    params = kwargs if kwargs else {}
+    url = f"{backend_url.rstrip('/')}/{endpoint.lstrip('/')}"
+    response = requests.get(url, params=params)
+
+    print("GET URL:", url)
+    print("Status code:", response.status_code)
+    print("Response text:", response.text)
+
+    try:
+        return response.json()
+    except Exception as e:
+        print("JSON parse error:", e)
+        return None
 
 def analyze_review_sentiments(text):
     request_url = sentiment_analyzer_url + "analyze/" + quote(text)

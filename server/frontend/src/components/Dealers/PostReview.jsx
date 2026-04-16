@@ -19,7 +19,7 @@ const PostReview = () => {
   let id =params.id;
   let dealer_url = root_url+`djangoapp/dealer/${id}`;
   let review_url = root_url+`djangoapp/add_review`;
-  let carmodels_url = root_url+`djangoapp/get_cars`;
+  let carmodels_url = root_url+`djangoapp/get_cars/`;
 
   const postreview = async ()=>{
     let name = sessionStorage.getItem("firstname")+" "+sessionStorage.getItem("lastname");
@@ -75,15 +75,22 @@ const PostReview = () => {
     }
   }
 
-  const get_cars = async ()=>{
+const get_cars = async () => {
+  try {
     const res = await fetch(carmodels_url, {
       method: "GET"
     });
     const retobj = await res.json();
-    
-    let carmodelsarr = Array.from(retobj.CarModels)
-    setCarmodels(carmodelsarr)
+
+    console.log("cars response:", retobj);
+
+    let carmodelsarr = Array.from(retobj.CarModels.cars);
+    setCarmodels(carmodelsarr);
+  } catch (error) {
+    console.error("Error loading cars:", error);
   }
+}
+
   useEffect(() => {
     get_dealer();
     get_cars();
@@ -101,12 +108,32 @@ const PostReview = () => {
       </div>
       <div className='input_field'>
       Car Make 
-      <select name="cars" id="cars" onChange={(e) => setModel(e.target.value)}>
-      <option value="" selected disabled hidden>Choose Car Make and Model</option>
-      {carmodels.map(carmodel => (
-          <option value={carmodel.CarMake+" "+carmodel.CarModel}>{carmodel.CarMake} {carmodel.CarModel}</option>
-      ))}
-      </select>        
+<select
+  name="cars"
+  id="cars"
+  onChange={(e) => setModel(e.target.value)}
+  defaultValue=""
+  style={{ color: "black", backgroundColor: "white" }}
+>
+  <option value="" disabled hidden>
+    Choose Car Make and Model
+  </option>
+
+  {carmodels.map((car, index) => {
+    const make = car.CarMake || car.make || "";
+    const model = car.CarModel || car.model || "";
+
+    return (
+      <option
+        key={index}
+        value={`${make} ${model}`}
+        style={{ color: "black", backgroundColor: "white" }}
+      >
+        {make} {model}
+      </option>
+    );
+  })}
+</select>
       </div >
 
       <div className='input_field'>
@@ -120,4 +147,4 @@ const PostReview = () => {
     </div>
   )
 }
-export default PostReview
+export default PostReview;

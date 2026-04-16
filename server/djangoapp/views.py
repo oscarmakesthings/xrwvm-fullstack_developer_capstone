@@ -125,19 +125,16 @@ def add_review(request):
         return JsonResponse({"status": 403, "message": "Unauthorized"})
 # def add_review(request):
 def get_cars(request):
-    count = CarMake.objects.filter().count()
-    print(count)
+    try:
+        res = get_request("/fetchCars/")
+        print("get_cars response:", res)
 
-    if count == 0:
-        initiate()
+        if not res:
+            return JsonResponse({"status": 500, "message": "No response from backend"})
 
-    car_models = CarModel.objects.select_related('car_make')
-    cars = []
+        car_models = res.get("CarModels", [])
+        return JsonResponse({"status": 200, "CarModels": car_models}, safe=False)
 
-    for car_model in car_models:
-        cars.append({
-            "CarModel": car_model.name,
-            "CarMake": car_model.car_make.name
-        })
-
-    return JsonResponse({"CarModels": cars})
+    except Exception as e:
+        print("Error in get_cars:", e)
+        return JsonResponse({"status": 500, "message": str(e), "CarModels": []})
