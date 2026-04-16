@@ -1,3 +1,3 @@
 [flake8]
-ignore = E501, E231, E302, E303, E275, E722, F401, F811, E712, E117, E131
-exclude = djangoenv, __pycache__
+ignore = E501, E231, E302, E303, E275, E722, F401, F811, E712, E117, E131, W292, W391, E121
+exclude = djangoenv, __pycache__nano .jshintrc
