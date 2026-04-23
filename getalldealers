@@ -1,0 +1,2 @@
+curl http://127.0.0.1:8000/djangoapp/dealers
+[{"_id":"69dfa2ee3603c59928c801ea","id":1,"city":"El Paso","state":"Texas",...}]
